@@ -1,4 +1,5 @@
 // librerias
+import processing.net.*;
 import processing.sound.*;
 import org.gamecontrolplus.gui.*;
 import org.gamecontrolplus.*;
@@ -8,6 +9,8 @@ ControlDevice stick;
 
 boolean MandON;//variable para activar el mando mapeo, etc
 boolean pause = true;
+
+Client client;
 
 // Estado del juego
 String state = "start";
@@ -96,6 +99,8 @@ float desaceleracion = 0.0002; // Desaceleración
 
 void setup() {
     fullScreen(P3D);
+
+    client = new Client(this, "127.0.0.1", 12345);
     
     // Música de fondo.
 	backgroundMusic = new SoundFile(this, "MedievalLofi.mp3"); 

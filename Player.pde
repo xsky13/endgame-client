@@ -44,6 +44,9 @@ class Player {
 
     // las tecladas utilizadas por el jugador
     int[] keyCodes;
+
+    String input;
+    int[] data = new int[2];
     
     Player(float x, float y, int playerNumber, int[] keyCodes) {
         this.position = new PVector(x, y);
@@ -92,6 +95,16 @@ class Player {
 
     // Dibuja al jugador. Toma como parametro un array de imagenes, y las muestra como secuencia por 6 segundos
     void drawPlayer(PImage[] images) {
+        int posX = int(this.position.x);
+        int posY = int(this.position.y);
+
+        if (client.available() > 0 && this.playerNumber == 1) {
+            input = client.readString();
+            input = input.substring(0, input.indexOf("\n"));
+            posX = int(split(input, ' ')[0]);
+            posY = int(split(input, ' ')[1]);
+        }
+
         // se incrementa la cuenta de frames
         frameCounter++;
         
@@ -106,7 +119,7 @@ class Player {
         // Se hace un bucle por images
         for (int i = 0; i < images.length; i++) {
             pushMatrix(); 
-            translate(this.position.x, this.position.y);
+            translate(posX, posY);
             // si la direccion del jugador es hacia la izquiera, entonces cambiar el lado hacia donde esta mirando
             scale(dir == "left" ? - 1 : 1, 1);
             // dibujar la imagen con el indice correcto
@@ -117,7 +130,7 @@ class Player {
         // barra de vida arriba del jugador
         fill(255, 0, 0);
         rectMode(CENTER);
-        rect(this.position.x - playerWidth / 2 + 40, this.position.y - playerHeight / 2, this.health / 1.5, 10, 10);
+        rect(posX - playerWidth / 2 + 40, posY - playerHeight / 2, this.health / 1.5, 10, 10);
         rectMode(CORNER);
 
         // barra de mas daño arriba del jugador
@@ -125,7 +138,7 @@ class Player {
             fill(100, 0, 255);
             rectMode(CENTER);
             // la longitud del rect empieza en 50, y se le van restando los milisegundos - el tiempo en el que hubo una colision. Esto esta en milisegundos, asi que hay que dividirlo por 100
-            rect(this.position.x - playerWidth / 2 + 40, (this.position.y - playerHeight / 2) - 10, 50 - ((millis() - pumpkinCollisionTime)/100), 10, 10);
+            rect(posX - playerWidth / 2 + 40, (posY - playerHeight / 2) - 10, 50 - ((millis() - pumpkinCollisionTime)/100), 10, 10);
             rectMode(CORNER);
         } 
         
@@ -145,6 +158,11 @@ class Player {
             drawPlayer(movingImages);
         } else {
             drawPlayer(idleImages);
+        }
+
+        if (this.playerNumber == 2) {
+            // Mandar la info al servidor
+            client.write(this.position.x + " " + this.position.y + "\n");
         }
         imageMode(CORNERS);
     }

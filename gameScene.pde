@@ -52,7 +52,7 @@ void gameScene() {
         players[i].applyGravity();
         players[i].attack(players[(i + 1) % players.length]);
         players[i].detectCollisionWithPlayer(players[(i + 1) % players.length]);
-        players[i].display();
+        players[i].display(players[(i + 1) % players.length]);
         players[i].updateDamage();
         // players[i].updateSoundVariables();
     }

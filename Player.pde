@@ -95,11 +95,16 @@ class Player {
 
     // Dibuja al jugador. Toma como parametro un array de imagenes, y las muestra como secuencia por 6 segundos
     void drawPlayer(PImage[] images) {
-        if (client.available() > 0 && this.playerNumber == 1) {
+        if (client.available() > 0) {
             input = client.readString();
             input = input.substring(0, input.indexOf("\n"));
-            this.position.x = int(split(input, ' ')[0]);
-            this.position.y = int(split(input, ' ')[1]);
+
+            if (this.playerNumber == 1) {
+                this.position.x = int(split(input, ' ')[0]);
+                this.position.y = int(split(input, ' ')[1]);
+            } else if (this.playerNumber == 2) {
+                this.health = int(split(input, ' ')[2]);
+            }
         }
 
         // se incrementa la cuenta de frames
@@ -147,7 +152,7 @@ class Player {
     
     // muestra al jugador en base a si esta atacando, si esta moviendo, o si no esta haciendo ninguno
     // se usa la funcion drawPlayer() para mostrar una secuencia de imagenes dependiendo de que accion este ejectutando 
-    void display() {
+    void display(Player enemy) {
         imageMode(CENTER);
         if (isAttacking) {
             drawPlayer(attackImages);
@@ -159,7 +164,7 @@ class Player {
 
         if (this.playerNumber == 2) {
             // Mandar la info al servidor
-            client.write(this.position.x + " " + this.position.y + "\n");
+            client.write(this.position.x + " " + this.position.y + " " + enemy.health + "\n");
         }
         imageMode(CORNERS);
     }

@@ -6,6 +6,7 @@ class Pumpkin {
     float pumpkinHeight = pumpkin.height;
 
     long collisionTime = 0;
+    String dataFromServer;
 
     Pumpkin(float x) {
         this.x = x;
@@ -13,6 +14,12 @@ class Pumpkin {
 
     // dibujar el hongo
     void display() {
+        if (client.available() > 0) {
+            dataFromServer = client.readString();
+            dataFromServer = dataFromServer.substring(0, dataFromServer.indexOf("\n"));
+            this.x = int(split(dataFromServer, ' ')[4]);
+        }
+        
         image(pumpkin, this.x, y);
     }
 

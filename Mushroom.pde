@@ -6,12 +6,20 @@ class Mushroom {
     float mushroomWidth = mushroom.width;
     float mushroomHeight = mushroom.height;
 
+    String dataFromServer;
+
     Mushroom(float x) {
         this.x = x;
     }
 
     // dibujar el hongo
     void display() {
+        if (client.available() > 0) {
+            dataFromServer = client.readString();
+            dataFromServer = dataFromServer.substring(0, dataFromServer.indexOf("\n"));
+            this.x = int(split(dataFromServer, ' ')[3]);
+        }
+        
         image(mushroom, this.x, y);
     }
 
